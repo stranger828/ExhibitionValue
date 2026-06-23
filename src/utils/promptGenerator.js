@@ -1,9 +1,14 @@
+import { PLANNING_QUESTIONS } from '../data/words.js';
+
 function list(values) {
   return values?.length ? values.join(', ') : '미입력';
 }
 
-function block(values) {
-  return Object.values(values || {}).filter(Boolean).join('\n\n') || '미입력';
+function planningBlock(values) {
+  const lines = PLANNING_QUESTIONS.fields.map(([key, question]) => (
+    `- ${question}\n  ${values?.[key] || '미입력'}`
+  ));
+  return lines.join('\n');
 }
 
 function seconds(ms) {
@@ -79,7 +84,7 @@ export function generatePrompt(state) {
 [입력 데이터]
 
 전시를 함께 상상하기 위한 단답 질문:
-${block(state.planningAnswers)}
+${planningBlock(state.planningAnswers)}
 
 긍정 핵심 키워드:
 ${list(state.positiveCoreWords)}

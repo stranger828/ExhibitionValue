@@ -1,4 +1,5 @@
 import { Copy, Download, Printer, RotateCcw } from 'lucide-react';
+import { PLANNING_QUESTIONS } from '../data/words.js';
 import { generatePrompt, buildResultData } from '../utils/promptGenerator.js';
 
 function SummaryBlock({ title, children }) {
@@ -27,6 +28,9 @@ export default function ResultPage({ state, onCopy, onRestart }) {
   const prompt = generatePrompt(state);
   const resultJson = JSON.stringify(buildResultData(state), null, 2);
   const alternativeEntries = Object.entries(state.positiveAlternativesForNegativeWords);
+  const planningRows = Object.fromEntries(
+    PLANNING_QUESTIONS.fields.map(([key, question]) => [question, state.planningAnswers[key]]),
+  );
   const stageSummaries = Object.values(state.interactionLog?.stageSummaries || {});
   const dwellEvents = state.interactionLog?.dwellEvents || [];
 
@@ -64,9 +68,7 @@ export default function ResultPage({ state, onCopy, onRestart }) {
         </SummaryBlock>
 
         <SummaryBlock title="단답 질문 답변 요약">
-          <TextRows data={{
-            '전시를 함께 상상하기 위한 질문': Object.values(state.planningAnswers).filter(Boolean).join('\n\n'),
-          }} />
+          <TextRows data={planningRows} />
         </SummaryBlock>
 
         <SummaryBlock title="키워드 흐름">
